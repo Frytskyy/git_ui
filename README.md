@@ -55,7 +55,7 @@ Python UI shell to simplify generic tasks with GIT
 <ol>
 <li>Select option <code class="" node="[object Object]">3</code> from the configuration menu.</li>
 <li>Enter the remote repository name (e.g., <code class="" node="[object Object]">repo1</code>).</li>
-<li>Enter the remote repository URL (e.g., <code class="" node="[object Object]">https://github.com/spialert-michael/SpiAlert_CV_Client.git</code>).</li>
+<li>Enter the remote repository URL (e.g., <code class="" node="[object Object]">https://github.com/Frytskyy/git_ui.git</code>).</li>
 <li>Enter the local directory to clone the repository to (e.g., <code class="" node="[object Object]">./repo1</code>).</li>
 </ol>
 <h3>Switching to a Different Remote Repository</h3>
