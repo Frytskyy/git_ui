@@ -47,21 +47,6 @@ def print_current_config(config, b_show_ext_remote_config=False):
         else:
             print(f"Error: {result.stderr}")
 
-#def print_current_config(config):
-#    print(f"Remote Name: {config['remote_name']}, Main Branch: {config['main_branch']}, Personal Branch: {config['personal_branch']}")
-#    print(f"Current Local Branch: {get_current_branch()}")
-
-def show_main_menu(config):
-    print_current_config(config)
-    print("Select an option:")
-    print("[1] Checkout")
-    print("[2] Commit/Push")
-    print("[3] Local repository")
-    print("[4] Branch")
-    print("[5] Tag")
-    print("[9] Configure")
-    print("[0] Exit")
-
 def show_checkout_menu(config):
     print_current_config(config)
     print("Select a checkout option:")
@@ -72,73 +57,12 @@ def show_checkout_menu(config):
     print("[5] Switch to a specific branch")
     print("[6] Checkout a specific commit")
     print("[7] Checkout a specific tag")
-    print("[8] Sync changes from main branch to local branch")
-    print("[0] Back to main menu")
-
-def show_commit_push_menu(config):
-    print_current_config(config)
-    print("Select a commit message:")
-    print("[1] Daily snapshot of work in progress")
-    print("[2] Bug fixes")
-    print("[3] Refactored and cleaned up the code")
-    print("[4] Optimized performance and efficiency")
-    print("[5] Documentation update")
-    print("[6] Merge changes from another branch")
-    print("[7] Security improvements")
-    print("[8] Dependency updates")
-    print("[9] Configuration changes")
-    print("[10] Amend the last commit [modify last commit]")
-    print("[11] Stash changes [temporarily hide changes]")
-    print("[12] Apply stashed changes [apply hidden changes]")
-    print("[0] Other (specify)")
-
-def show_local_repo_menu(config):
-    print_current_config(config)
-    print("Select a local repository option:")
-    print("[1] Show local changes")
-    print("[2] Find who introduced text change")
-    print("[3] Show commit history")
-    print("[4] Show status")
-    print("[5] Show file history")
-    print("[6] Show branch history")
-    print("[7] Reset to a specific commit")
-    print("[8] Revert a specific commit")
-    print("[0] Back to main menu")
-
-def show_branch_menu(config):
-    print_current_config(config)
-    print("Select a branch option:")
-    print("[1] List branches")
-    print("[2] Create a new branch")
-    print("[3] Delete a branch")
-    print("[4] Merge branches")
-    print("[5] Rebase branches")
-    print("[6] Push new branch to remote")
-    print("[0] Back to main menu")
-
-def show_tag_menu(config):
-    print_current_config(config)
-    print("Select a tag option:")
-    print("[1] List tags")
-    print("[2] Create a new tag")
-    print("[3] Delete a tag")
-    print("[0] Back to main menu")
-
-def show_configure_menu(config):
-    print_current_config(config, True)
-    print("Select a configuration option:")
-    print("[1] Set main branch name")
-    print("[2] Set personal branch name")
-    print("[3] Add remote repository [+ clone]")
-    print("[4] Remove remote repository")
-    print("[5] Switch to remote repository")
-    print("[6] Set global user name")
-    print("[7] Set global user email")
+    print("[8] Sync/merge changes from main branch to local branch")
     print("[0] Back to main menu")
     
 def handle_checkout_option(option, config):
     if option == "1":
-        os.system("git pull")
+        os.system(f"git pull {config['remote_name']} {config['personal_branch']}")
     elif option == "2":
         os.system("git fetch")
     elif option == "3":
@@ -163,11 +87,28 @@ def handle_checkout_option(option, config):
         print("Invalid option.")
 
 def sync_changes_from_main_branch(config):
-    os.system(f"git checkout {config['main_branch']}")  # switching to main branch
-    os.system(f"git pull {config['remote_name']} {config['main_branch']}")  # get latest changes from main branch on remote repository
     os.system(f"git checkout {config['personal_branch']}")  # Switch to personal branch
-    os.system(f"git pull {config['remote_name']} {config['personal_branch']}")  # get latest changes from personal branch on remote repository
+    os.system(f"git pull {config['remote_name']} {config['main_branch']}")  # get latest changes from main branch on remote repository
+    os.system(f"git merge {config['main_branch']}")  # get latest changes from main branch on remote repository
+    os.system(f"git push")  # push merge result in personal branch to remote repository
     print(f"Changes from {config['main_branch']} branch have been synchronized to {config['personal_branch']} branch.")
+    
+def show_commit_push_menu(config):
+    print_current_config(config)
+    print("Select a commit message:")
+    print("[1] Daily snapshot of work in progress")
+    print("[2] Bug fixes")
+    print("[3] Refactored and cleaned up the code")
+    print("[4] Optimized performance and efficiency")
+    print("[5] Documentation update")
+    print("[6] Merge changes from another branch")
+    print("[7] Security improvements")
+    print("[8] Dependency updates")
+    print("[9] Configuration changes")
+    print("[10] Amend the last commit [modify last commit]")
+    print("[11] Stash changes [temporarily hide changes]")
+    print("[12] Apply stashed changes [apply hidden changes]")
+    print("[0] Other (specify)")
 
 def handle_commit_push_option(option, config):
     commit_messages = {
@@ -201,12 +142,22 @@ def handle_commit_push_option(option, config):
 
     if diff_result.returncode != 0:
         os.system(f'git commit -m "{commit_message}"')
-        # Get the current branch name
-        current_branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True).strip()
-        # Push to the current branch
-        os.system(f"git push -u origin {current_branch}")
+        os.system(f"git push -u {config['remote_name']} {config['personal_branch']}")
     else:
         print("No changes to commit.")
+
+def show_local_repo_menu(config):
+    print_current_config(config)
+    print("Select a local repository option:")
+    print("[1] Show local changes")
+    print("[2] Find who introduced text change")
+    print("[3] Show commit history")
+    print("[4] Show status")
+    print("[5] Show file history")
+    print("[6] Show branch history")
+    print("[7] Reset to a specific commit")
+    print("[8] Revert a specific commit")
+    print("[0] Back to main menu")
 
 def handle_local_repo_option(option):
     if option == "1":
@@ -235,6 +186,17 @@ def handle_local_repo_option(option):
     else:
         print("Invalid option.")
 
+def show_branch_menu(config):
+    print_current_config(config)
+    print("Select a branch option:")
+    print("[1] List branches")
+    print("[2] Create a new branch")
+    print("[3] Delete a branch")
+    print("[4] Merge branches")
+    print("[5] Rebase branches")
+    print("[6] Push new branch to remote")
+    print("[0] Back to main menu")
+
 def handle_branch_option(option, config):
     if option == "1":
         os.system("git branch -a")
@@ -259,6 +221,14 @@ def handle_branch_option(option, config):
     else:
         print("Invalid option.")
 
+def show_tag_menu(config):
+    print_current_config(config)
+    print("Select a tag option:")
+    print("[1] List tags")
+    print("[2] Create a new tag")
+    print("[3] Delete a tag")
+    print("[0] Back to main menu")
+
 def handle_tag_option(option):
     if option == "1":
         os.system("git tag")
@@ -272,6 +242,18 @@ def handle_tag_option(option):
         return
     else:
         print("Invalid option.")
+
+def show_configure_menu(config):
+    print_current_config(config, True)
+    print("Select a configuration option:")
+    print("[1] Set main branch name")
+    print("[2] Set personal branch name")
+    print("[3] Add remote repository [+ clone]")
+    print("[4] Remove remote repository")
+    print("[5] Switch to remote repository")
+    print("[6] Set global user name")
+    print("[7] Set global user email")
+    print("[0] Back to main menu")
 
 def handle_configure_option(option, config):
     if option == "1":
@@ -319,6 +301,17 @@ def handle_configure_option(option, config):
         print("Invalid option.")
     save_config(config)
 
+def show_main_menu(config):
+    print_current_config(config)
+    print("Select an option:")
+    print("[1] Checkout")
+    print("[2] Commit/Push")
+    print("[3] Local repository")
+    print("[4] Branch")
+    print("[5] Tag")
+    print("[9] Configure")
+    print("[0] Exit")
+
 def main():
     config = load_config()
 
@@ -330,7 +323,7 @@ def main():
             while True:
                 show_checkout_menu(config)
                 checkout_option = input("Enter your choice (1-7, 0): ")
-                handle_checkout_option(checkout_option)
+                handle_checkout_option(checkout_option, config)
                 if checkout_option == "0":
                     break
         elif main_option == "2":
