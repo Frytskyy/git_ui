@@ -1,4 +1,4 @@
-# Copyright (c) 2009-2022 Volodymyr Frytskyy (https://www.vladonai.com/about-resume)
+# Copyright (c) 2009-2024 Volodymyr Frytskyy (https://www.vladonai.com/about-resume)
 #
 # This script is a simplification tool for daily Git routines. It is a generic script that can be useful for working with GitHub, and it is easy to configure.
 #
